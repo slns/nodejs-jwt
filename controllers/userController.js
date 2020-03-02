@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 //const authMiddleware = require("../middleware/auth");
 const expressJwt = require('express-jwt');
 //const blacklist = require("express-jwt-blacklist");
+const auth = require('../middleware/auth');
 
 const jwtMiddleWare = expressJwt({
   secret: process.env.TOKEN_KEY
@@ -74,10 +75,23 @@ router.post("/authenticate", async (req, res) => {
 //   res.sendStatus(200);
 // });
 
-router.get("/me", jwtMiddleWare, async (req, res) => {
+// router.get("/me", jwtMiddleWare, async (req, res) => {
+//   try {
+//     const { user } = req;
+//     const userDB = await User.findById(user.id);
+
+//     return res.json({ userDB });
+//   } catch (err) {
+//     return res.status(400).json({ error: "Can't get user information" });
+//   }
+// });
+
+router.get("/me", auth.checkToken, async (req, res) => {
+  console.log('MEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE?');
   try {
     const { user } = req;
     const userDB = await User.findById(user.id);
+    console.log('userDB ', userDB);
 
     return res.json({ userDB });
   } catch (err) {
